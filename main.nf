@@ -104,16 +104,14 @@ workflow MGENOTTATE {
     )
     
    // Define mash DB channel safely
-Channel
-    .from(params.gtdbtk_mash_db ? [file(params.gtdbtk_mash_db)] : [null])
-    .set { ch_mash_db }
+
 
 // Use the channel in your GTDBTK_CLASSIFYWF process
    GTDBTK_CLASSIFYWF (
     DREP_DEREPLICATE.out.dereplicated_genomes,
     tuple(params.gtdbtk_db_name, file(params.gtdbtk_db_path)),
     params.gtdbtk_use_pplacer_scratch_dir ?: false,
-    ch_mash_db
+    []
 )
 
     CONTIG_CONCAT (
