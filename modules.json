@@ -15,6 +15,11 @@
                         "git_sha": "9437e6053dccf4aafa022bfd6e7e9de67e625af8",
                         "installed_by": ["modules"]
                     },
+                    "gtdbtk/classifywf": {
+                        "branch": "master",
+                        "git_sha": "bf8df3a44dc8e81a22a397975fc90d003902b22b",
+                        "installed_by": ["modules"]
+                    },
                     "gunzip": {
                         "branch": "master",
                         "git_sha": "3a5fef109d113b4997c9822198664ca5f2716208",

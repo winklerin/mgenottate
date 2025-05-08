@@ -27,6 +27,7 @@ include { CONTIG_CONCAT          } from './modules/local/contig_concat'
 include { CAT_CAT                } from './modules/nf-core/cat/cat'
 include { MMSEQS_CONTIG_TAXONOMY } from './subworkflows/nf-core/mmseqs_contig_taxonomy'
 include { MERGE_TABLES           } from './modules/local/merge_tables'
+include { GTDBTK_CLASSIFYWF      } from './modules/nf-core/gtdbtk/classifywf/main'  
 
 // Print parameter summary log to screen before running
 log.info paramsSummaryLog(workflow)
@@ -101,7 +102,13 @@ workflow MGENOTTATE {
         )
     )
     
-    
+    GTDBTK_CLASSIFYWF (
+        DREP_DEREPLICATE.out.dereplicated_genomes,
+        tuple(params.gtdbtk_db_name, file(params.gtdbtk_db_path)),
+        params.gtdbtk_use_pplacer_scratch_dir ?: false,
+        file(params.gtdbtk_mash_db ?: "")
+    )
+
     CONTIG_CONCAT (
         DREP_DEREPLICATE.out.dereplicated_genomes.transpose()
     )
@@ -124,14 +131,16 @@ workflow MGENOTTATE {
     }    
 
     MERGE_TABLES(
-        DREP_DEREPLICATE.out.genomeInfo.join(
-            DREP_DEREPLICATE.out.sdb
-        ).join(
-            DREP_DEREPLICATE.out.cdb
-        ).join(
-            tax_annot
-        )
+    DREP_DEREPLICATE.out.genomeInfo.join(
+        DREP_DEREPLICATE.out.sdb
+    ).join(
+        DREP_DEREPLICATE.out.cdb
+    ).join(
+        tax_annot
+    ).join(
+        GTDBTK_CLASSIFYWF.out.summary
     )
+     )
 }
 
 /*
